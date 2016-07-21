@@ -8,7 +8,14 @@
 
 #import "ViewController.h"
 
+#define kMaxCount 60
+
 @interface ViewController ()
+
+//tip：这是一个Custom 按钮，改为System 按钮的话，当按钮标题改变的时候，会出现一闪一闪的情况。
+@property (weak, nonatomic) IBOutlet UIButton *countDownButton;
+
+@property (strong, nonatomic) NSTimer *countDownTimer;
 
 @end
 
@@ -16,8 +23,58 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view, typically from a nib.
 }
+
+- (IBAction)countDownButtonClick:(id)sender {
+    
+    //[self rightFunction];
+    
+    [self wrongFunction];
+}
+
+- (void)rightFunction {
+    dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        
+        NSDate *date = [NSDate date];
+        NSInteger count = kMaxCount;
+        NSTimeInterval interval = 0;
+        
+        while (count > 0) {
+            interval = [[NSDate date] timeIntervalSince1970] - [date timeIntervalSince1970];
+            count = kMaxCount - (NSInteger)interval;
+            
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self.countDownButton setTitle:[NSString stringWithFormat:@"%@",@(count)] forState:UIControlStateNormal];
+            });
+            
+            [NSThread sleepForTimeInterval:1];
+        }
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.countDownButton setTitle:@"倒计时" forState:UIControlStateNormal];
+        });
+        
+    });
+}
+
+- (void)wrongFunction {
+    self.countDownTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(countDown:) userInfo:nil repeats:YES];
+}
+
+static NSInteger maxCount = 60;
+
+- (void)countDown:(id)sender {
+    maxCount -= 1;
+    [self.countDownButton setTitle:[NSString stringWithFormat:@"%@",@(maxCount)] forState:UIControlStateNormal];
+    
+    if (maxCount == 0) {
+        [self.countDownTimer invalidate];
+        maxCount = 60;
+        [self.countDownButton setTitle:@"倒计时" forState:UIControlStateNormal];
+    }
+}
+
+
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
