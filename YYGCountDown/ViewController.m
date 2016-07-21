@@ -33,6 +33,7 @@
 }
 
 - (void)rightFunction {
+    self.countDownButton.enabled = NO;
     dispatch_async(dispatch_get_global_queue(0, 0), ^{
         
         NSDate *date = [NSDate date];
@@ -52,12 +53,14 @@
         
         dispatch_async(dispatch_get_main_queue(), ^{
             [self.countDownButton setTitle:@"倒计时" forState:UIControlStateNormal];
+            self.countDownButton.enabled = YES;
         });
         
     });
 }
 
 - (void)wrongFunction {
+    self.countDownButton.enabled = NO;
     self.countDownTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(countDown:) userInfo:nil repeats:YES];
 }
 
@@ -71,6 +74,7 @@ static NSInteger maxCount = 60;
         [self.countDownTimer invalidate];
         maxCount = 60;
         [self.countDownButton setTitle:@"倒计时" forState:UIControlStateNormal];
+        self.countDownButton.enabled = YES;
     }
 }
 
