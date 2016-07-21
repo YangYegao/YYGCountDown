@@ -27,9 +27,9 @@
 
 - (IBAction)countDownButtonClick:(id)sender {
     
-    //[self rightFunction];
+    [self rightFunction];
     
-    [self wrongFunction];
+    //[self wrongFunction];
 }
 
 - (void)rightFunction {
@@ -59,6 +59,8 @@
     });
 }
 
+
+//使用这种做法，开始倒计时之后，若app进入后台，倒计时的秒数会停止不动。
 - (void)wrongFunction {
     self.countDownButton.enabled = NO;
     self.countDownTimer = [NSTimer scheduledTimerWithTimeInterval:1 target:self selector:@selector(countDown:) userInfo:nil repeats:YES];
